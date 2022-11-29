@@ -1,0 +1,12 @@
+run:
+  timeout: "5m"
+
+linters:
+  disable:
+    - ineffassign
+linters-settings:
+  gosimple:
+    go: "1.13"
+    checks:
+      - -S1016
+  
