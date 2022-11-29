@@ -1,0 +1,21 @@
+version: "3.9"
+
+services: 
+  xendit-webhook: 
+    image: docker.io/wildani/xendit-webhook:0.0.1
+    container_name: xendit-webhook
+    command: ["/go/bin/xendit-webhook"]
+    env_file:
+      - ./.env
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    deploy:
+      replicas: 1
+    networks:
+      - traefik-front-net
+
+networks:
+  traefik-front-net:
+    name: traefik-front-net
+    driver: overlay
+    external: true
