@@ -1,0 +1,17 @@
+name: Production CI/CD
+
+on:
+  push:
+    branches:
+      - "main"
+  workflow_call:
+
+jobs:
+  ci:
+    uses: ./.github/workflows/go.yml
+    secrets: inherit
+  
+  build:
+    needs: ci
+    uses: ./.github/workflows/docker-image.yml
+    secrets: inherit
