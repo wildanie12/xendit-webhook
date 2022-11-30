@@ -2,7 +2,7 @@ version: "3.9"
 
 services: 
   xendit-webhook: 
-    image: docker.io/wildani/xendit-webhook:0.0.1
+    image: docker.io/wildani/xendit-webhook:0.0.3
     container_name: xendit-webhook
     command: ["/go/bin/xendit-webhook"]
     env_file:

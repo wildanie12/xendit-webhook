@@ -6,18 +6,26 @@ on:
 
 jobs:
   deploy:
+    name: deploy
     runs-on: ubuntu-latest
     steps:
-      - name: executing remote ssh to server
-        uses: appleboy/ssh-action@master
-        env:
-          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SERVER_KEY }}
-          port: ${{ secrets.SERVER_PORT }}
-          script: |
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker service update --image ${{secrets.DOCKER_USERNAME}}/xendit-webhook:${{env.VER}} --force common-services_whoami-1
+    - uses: actions/checkout@v3
+    - name: set variables
+      run: |
+        VERSION=$(cat .version) 
+        echo "VER=$VERSION" >> $GITHUB_ENV 
+    - uses: appleboy/ssh-action@master
+      name: executing remote ssh to server
+      env:
+        DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        APP_VERSION: ${{ env.VER }}
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_KEY }}
+        port: ${{ secrets.SERVER_PORT }}
+        envs: DOCKER_USERNAME,DOCKER_PASSWORD,APP_VERSION
+        script: |
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker service update --image ${{secrets.DOCKER_USERNAME}}/xendit-webhook:$APP_VERSION --force xendit-sandbox_xendit-webhook --with-registry-auth
