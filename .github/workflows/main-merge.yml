@@ -15,3 +15,8 @@ jobs:
     needs: ci
     uses: ./.github/workflows/docker-image.yml
     secrets: inherit
+  
+  deploy:
+    needs: build
+    uses: ./github/workflows/deploy.yml
+    secrets: inherit
